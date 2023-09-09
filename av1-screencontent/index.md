@@ -40,8 +40,8 @@ Note: reproduding the fiddle results currently requires a [patched version of Ch
 We compare the frame size when using screen content coding tools ("screen") to the stock result (normal)
 for a given target and frame rate. This is done while slowly paging through a slide deck where the content changes only every few seconds:
 ![frame size comparison](av1-framesizes.png)
-
 The graph shows the size of each encoded frame (y) over the frame number (x).
+
 The slide changes cause large spikes in bitrate compared to the very small frames before.
 This is problematic in use-cases such as video conferencing that need to estimate and allocate a bandwidth budget to the encoded frames.
 Enabling screen content coding tools lead to a reduced frame size (i.e. smaller spikes) and an overall bitrate reduction by ~10%.
@@ -52,6 +52,7 @@ Enabling screen content coding tools lead to a reduced frame size (i.e. smaller 
 [jsfiddle used](https://jsfiddle.net/fippo/r392ohwz/23/)
 The impact of screen content coding tools is also quite visible when a website containing a lot of text is captured at a low bitrate (100kbps):
 ![text is sharper with screen content coding tools](av1-text-sharp.png)
+
 The screen content coding tools enabled encoder produces sharper and more readable text. Zooming in shows a lot of artifacts when not using
 screen content coding tools:
 ![text is sharper with screen content coding tools](av1-text-sharp-zoom.png)
@@ -60,6 +61,8 @@ screen content coding tools:
 Scrolling a website containing a lot of text with the same setup as before shows a significant difference as well.
 In a  screenshot one can see similar results as before:
 ![screen content coding tools reduce blurriness](av1-blur-static.png)
-This video of a screen capture (using a different codec but at higher bitrate to reduce artifacts) shows that using screen content coding
+
+This video of a screen capture (using a different codec but at higher bitrate to reduce artifacts, [original source](av1-screencontent.mp4)) shows that using screen content coding
 tools make a big difference in how "blurry" the result looks:
-![screen content coding tools reduce blurriness](av1-screencontent.mp4)
+
+https://github.com/fippo/webrtc-explainers/assets/289731/bacdac41-04f3-4c9e-a6f9-7c17501f027b
