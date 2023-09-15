@@ -66,3 +66,9 @@ This video of a screen capture (using a different codec but at higher bitrate to
 tools make a big difference in how "blurry" the result looks:
 
 https://github.com/fippo/webrtc-explainers/assets/289731/bacdac41-04f3-4c9e-a6f9-7c17501f027b
+
+### Increases frame size when encoding non-slide content
+This increases the frame size when encoding non-slide content such as videos. While on static content only a few delta frames are slightly larger,
+this happens periodically (due to palette change?) and is much more pronounced:
+![screen content coding tools increase frame size for video](av1-screencontent-video.png)
+and a 20-30% increase in bitrate.
