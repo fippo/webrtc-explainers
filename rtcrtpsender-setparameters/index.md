@@ -23,12 +23,13 @@ Browser: sends a key frame
 ```
 This introduces a delay of at least one round trip time (<200ms) which is perceived
 as a video freeze for the remote participants. Generating a key frame when turning off the
-high spatial layer avoids this delay and improves the perceived video quality.
+high spatial layer(s) avoids this delay and improves the perceived video quality.
 
 ## Code sample
 ```
 const sender = pc1.getSenders()[0];
 const parameters = sender.getParameters();
+parameters.encodings[0].active = true;  // for illustration purposes.
 parameters.encodings[1].active = false; // Disable upper spatial layers
 parameters.encodings[2].active = false;
 sender.setParameters(parameters, {encodingOptions:
