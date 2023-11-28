@@ -12,7 +12,7 @@ In many of these cases, the server required for multiparty conferencing will req
 generation of a keyFrame via an RTCP protocol message. However, some applications may want
 to also control what spatial layers are encoded as described in
   https://webrtchacks.com/suspending-simulcast-streams/
-In those cases, turning off a high resolution spatial layer may cause participants
+In those cases, turning off a high resolution spatial layer will cause participants
 receiving that layer to "switch down". In order to switch down a key frame is required.
 This can cause the following flow events between the browser and the server:
 ```
@@ -29,7 +29,10 @@ high spatial layer avoids this delay and improves the perceived video quality.
 ```
 const sender = pc1.getSenders()[0];
 const parameters = sender.getParameters();
-sender.setParameters(parameters, {encodingOptions: [{keyFrame: true}]});
+parameters.encodings[1].active = false; // Disable upper spatial layers
+parameters.encodings[2].active = false;
+sender.setParameters(parameters, {encodingOptions:
+  [{keyFrame: true}, {keyFrame: false}, {keyFrame: false}]});
 ```
 
 ## Design notes
@@ -37,14 +40,14 @@ There has been quite some back and forth on where this API should live and how i
 For example it has been proposed to have a dedicated `generateKeyFrame` method as part on the
 RTCRtpSender object. As specified in
   https://w3c.github.io/webrtc-encoded-transform/#dom-rtcrtpscripttransformer-generatekeyframe
-this did not take simulcast into account and created a unneccessary dependency on the
-Encoded Transform spec.
+this does not take simulcast into account and creates a unneccessary dependency on the
+Encoded Transform spec. It can also lead to race conditions where the separate calls to
+`generateKeyFrame` and `setParameters` might end up yielding two key frames.
 
-It also turned out that the need for a keyframe often coincides with other changes to the
-encoding parameters which are typically controlled via the sender's `getParameters` and
-`setParameters` methods. One particular example here is changing the scaleResolutionDownBy
-factor which affects the size of the encoded frame which usually required a key frame to
-be encoded.
+The need for a keyframe often coincides with other changes to the encoding parameters which
+are controlled via the sender's `getParameters` and `setParameters` methods.
+One particular example here is changing the scaleResolutionDownBy factor which affects the size
+of the encoded frame which requires a key frame to be encoded.
 
 Since requesting a key frame is a transient operation, adding
 it to the encoding parameters which are returned by getParameters seemed inappropriate. The
